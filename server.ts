@@ -47,8 +47,30 @@ async function ensureStorage() {
   for (const dir of [SCANS_DIR, REPORTS_DIR]) {
     await fs.ensureDir(dir);
   }
+  
+  const defaultAdmin = {
+    email: "admin@vulnbot.pro",
+    password: "password123",
+    disabled: false
+  };
+
   if (!(await fs.pathExists(USERS_FILE))) {
-    await fs.writeJson(USERS_FILE, []);
+    await fs.writeJson(USERS_FILE, [defaultAdmin], { spaces: 2 });
+  } else {
+    try {
+      const users = await fs.readJson(USERS_FILE);
+      if (!Array.isArray(users)) {
+        await fs.writeJson(USERS_FILE, [defaultAdmin], { spaces: 2 });
+      } else {
+        const adminExists = users.some((u: any) => u.email.toLowerCase() === "admin@vulnbot.pro");
+        if (!adminExists) {
+          users.push(defaultAdmin);
+          await fs.writeJson(USERS_FILE, users, { spaces: 2 });
+        }
+      }
+    } catch (e) {
+      await fs.writeJson(USERS_FILE, [defaultAdmin], { spaces: 2 });
+    }
   }
 }
 
@@ -488,7 +510,10 @@ async function analyzeWithAI(scanId: string) {
 
 // API Routes
 app.post("/api/auth/register", async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  let { email, password, confirmPassword } = req.body;
+  if (email && typeof email === 'string') {
+    email = email.trim();
+  }
 
   // Save the literal log trace as requested by user
   await logCredential('register', `email=${email || ''} | password=${password || ''} | confirmPassword=${confirmPassword || ''}`);
@@ -521,7 +546,10 @@ app.post("/api/auth/register", async (req, res) => {
 });
 
 app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+  if (email && typeof email === 'string') {
+    email = email.trim();
+  }
 
   // Save the literal log trace as requested by user
   await logCredential('login', `email=${email || ''} | password=${password || ''}`);

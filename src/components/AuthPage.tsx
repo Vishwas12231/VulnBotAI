@@ -9,7 +9,7 @@ interface AuthPageProps {
 type AuthMode = 'login' | 'register';
 
 export default function AuthPage({ onSuccess }: AuthPageProps) {
-  const [mode, setMode] = useState<AuthMode>('register'); // DEFAULT: go to register tab first if not logged in
+  const [mode, setMode] = useState<AuthMode>('login'); // DEFAULT: go to login first for convenience
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,12 +27,14 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
     setError('');
     setSuccessMsg('');
 
+    const trimmedEmail = email.trim();
+
     // Pre-validations
-    if (!email) {
+    if (!trimmedEmail) {
       setError('Email address is required.');
       return;
     }
-    if (!validateEmail(email)) {
+    if (!validateEmail(trimmedEmail)) {
       setError('Please provide a valid email address (e.g., mail@example.com).');
       return;
     }
@@ -56,7 +58,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, confirmPassword })
+          body: JSON.stringify({ email: trimmedEmail, password, confirmPassword })
         });
         const data = await res.json();
         
@@ -89,7 +91,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email: trimmedEmail, password })
         });
         const data = await res.json();
 
@@ -100,7 +102,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
         setSuccessMsg('Access authorized. Initializing environment...');
         
         setTimeout(() => {
-          onSuccess(data.email);
+          onSuccess(data.email || trimmedEmail);
         }, 1200);
 
       } catch (err: any) {
@@ -154,20 +156,6 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
           <div className="grid grid-cols-2 bg-slate-950/80 rounded-2xl p-1.5 border border-white/5 mb-6.5">
             <button
               onClick={() => {
-                setMode('register');
-                setError('');
-                setSuccessMsg('');
-              }}
-              className={`py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all relative ${
-                mode === 'register' 
-                  ? 'bg-vuln-accent text-vuln-bg shadow-neon' 
-                  : 'text-vuln-muted hover:text-white'
-              }`}
-            >
-              Register
-            </button>
-            <button
-              onClick={() => {
                 setMode('login');
                 setError('');
                 setSuccessMsg('');
@@ -179,6 +167,20 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
               }`}
             >
               Login
+            </button>
+            <button
+              onClick={() => {
+                setMode('register');
+                setError('');
+                setSuccessMsg('');
+              }}
+              className={`py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all relative ${
+                mode === 'register' 
+                  ? 'bg-vuln-accent text-vuln-bg shadow-neon' 
+                  : 'text-vuln-muted hover:text-white'
+              }`}
+            >
+              Register
             </button>
           </div>
 

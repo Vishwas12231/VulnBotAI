@@ -1550,18 +1550,21 @@ const AIChatbot = ({
 };
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('vulnbot_operator_email');
+    } catch (e) {
+      console.warn("localStorage is blocked in sandboxed iframe environment:", e);
+      return null;
+    }
+  });
   const [currentPage, setCurrentPage] = useState<Page>('landing');
   const [currentScanId, setCurrentScanId] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<any>(null);
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   // Clear any stale local storage key to force start on the auth screen right now
-  //   localStorage.removeItem('vulnbot_operator_email');
-  // }, []);
-
   useEffect(() => {
+    // Settings check hook
     const checkSettings = async () => {
       try {
         const res = await fetch('/api/admin/settings');
@@ -1624,7 +1627,11 @@ export default function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('vulnbot_operator_email');
+    try {
+      localStorage.removeItem('vulnbot_operator_email');
+    } catch (e) {
+      console.warn("Storage removal failed", e);
+    }
     setCurrentPage('landing');
   };
 
@@ -1635,7 +1642,11 @@ export default function App() {
       <AuthPage 
         onSuccess={(email) => {
           setCurrentUser(email);
-          localStorage.setItem('vulnbot_operator_email', email);
+          try {
+            localStorage.setItem('vulnbot_operator_email', email);
+          } catch (e) {
+            console.warn("Storage write failed", e);
+          }
           setCurrentPage('landing');
         }} 
       />
