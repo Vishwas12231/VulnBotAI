@@ -6,6 +6,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import dns from "dns/promises";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { generateReportDocx } from "./reportGenerator";
 
 const app = express();
 const PORT = 3000;
@@ -931,6 +932,28 @@ app.get("/api/scans", async (req, res) => {
     res.json(scans.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
   } catch (error) {
     res.json([]);
+  }
+});
+
+app.post("/api/report/generate", async (req, res) => {
+  try {
+    const { studentName, rollNumber, guideName, institution, academicYear, showWatermark, lineSpacing } = req.body;
+    const docBuffer = await generateReportDocx({
+      studentName,
+      rollNumber,
+      guideName,
+      institution,
+      academicYear,
+      showWatermark,
+      lineSpacing
+    });
+    
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    res.setHeader("Content-Disposition", "attachment; filename=Project_Report_VulnBot.docx");
+    res.send(docBuffer);
+  } catch (error: any) {
+    console.error("Failed to generate report docx:", error);
+    res.status(500).json({ error: "Could not compile MS Word academic report." });
   }
 });
 

@@ -39,6 +39,7 @@ import SettingsPage from './components/SettingsPage';
 import DocumentationPage from './components/DocumentationPage';
 import SafetyGuidelinesPage from './components/SafetyGuidelinesPage';
 import AdminPanel from './components/AdminPanel';
+import AcademicReportPage from './components/AcademicReportPage';
 
 // --- Types ---
 type Page = 'landing' | 'dashboard' | 'scanner' | 'results' | 'reports' | 'settings' | 'documentation' | 'safety' | 'admin';
@@ -1695,13 +1696,19 @@ export default function App() {
           />
         )}
         {currentPage === 'reports' && (
-          <DashboardPage 
-            setPage={handleSetPage} 
-            onViewResults={(scan) => {
-              setScanResult(scan);
-              handleSetPage('results');
-            }} 
-          />
+          <div className="space-y-12">
+            <DashboardPage 
+              setPage={handleSetPage} 
+              onViewResults={(scan) => {
+                setScanResult(scan);
+                handleSetPage('results');
+              }} 
+            />
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="border-t border-white/10" />
+            </div>
+            <AcademicReportPage />
+          </div>
         )}
         {currentPage === 'settings' && <SettingsPage currentUser={currentUser} />}
         {currentPage === 'documentation' && <DocumentationPage />}
