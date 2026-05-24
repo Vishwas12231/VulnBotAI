@@ -1556,10 +1556,10 @@ export default function App() {
   const [scanResult, setScanResult] = useState<any>(null);
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
 
-  useEffect(() => {
-    // Clear any stale local storage key to force start on the auth screen right now
-    localStorage.removeItem('vulnbot_operator_email');
-  }, []);
+  // useEffect(() => {
+  //   // Clear any stale local storage key to force start on the auth screen right now
+  //   localStorage.removeItem('vulnbot_operator_email');
+  // }, []);
 
   useEffect(() => {
     const checkSettings = async () => {
