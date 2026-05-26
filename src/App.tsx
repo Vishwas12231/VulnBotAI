@@ -163,6 +163,115 @@ const Navbar = ({
 };
 
 const LandingPage = ({ onStart }: { onStart: () => void }) => {
+  const [selectedTool, setSelectedTool] = useState<any>(null);
+
+  const toolsData = [
+    { 
+      title: 'Nmap', 
+      desc: 'Industry standard port scanning & service discovery.', 
+      icon: Terminal,
+      howItWorks: 'Sends strategically crafted TCP/IP packets to target ports, parsing response patterns to identify active hosts, find open ports, determine exact service names & version numbers, and detect firewalls or OS architectures.',
+      vulnsFound: [
+        'Outdated/vulnerable service versions (matching against CVE feeds)',
+        'Unnecessary exposed ports (such as SSH, database interfaces)',
+        'Misconfigured firewall and ingress rule loopholes',
+        'Weak or default-configured protocol access points'
+      ],
+      commandExample: 'nmap -sS -sV -O -T4 --top-ports 1000 target.com'
+    },
+    { 
+      title: 'SQLMap', 
+      desc: 'Automatic SQL injection and database takeover tool.', 
+      icon: ShieldAlert,
+      howItWorks: 'Automates detection and exploitation of SQL injection. It parses URL parameters and HTTP POST headers, testing payload variants (boolean-based, error-based, time-based) to verify if queries are executed by the DB engine.',
+      vulnsFound: [
+        'Classic, Error-based, and Blind SQL Injection routes',
+        'Direct remote database takeover capabilities',
+        'Exploitable file system reading/writing through SQL targets',
+        'Exposed database configuration and sensitive database schemas'
+      ],
+      commandExample: 'sqlmap -u "https://target.com/api/items?id=1" --batch --dbs'
+    },
+    { 
+      title: 'Subfinder', 
+      desc: 'Passive subdomain discovery tool.', 
+      icon: Search,
+      howItWorks: 'Uses passive OSINT methodologies, querying over 40 distinct public and private APIs (search engines, DNS databases, certificate transparency logs) to map an entire subdomain tree without directly touching the target.',
+      vulnsFound: [
+        'Unlisted staging or development environments with legacy security',
+        'Zombie domains prone to Subdomain Takeover (broken CNAME records)',
+        'Shadow IT running unmonitored server interfaces',
+        'Hidden login screens and directory indices'
+      ],
+      commandExample: 'subfinder -d target.com -silent -o subdomains.txt'
+    },
+    { 
+      title: 'Wappalyzer', 
+      desc: 'Technology stack and CMS profiling.', 
+      icon: GlobeIcon,
+      howItWorks: 'Secures and examines HTML body elements, response HTTP headers, client-side meta elements, cookies, and JavaScript code fingerprints to identify the stack (CMS, JS frameworks, cloud hosting hosts).',
+      vulnsFound: [
+        'Known exploits in CMS frameworks (WordPress, Drupal, etc.)',
+        'Outdated, vulnerable client-side libraries (such as old versions of jQuery or React)',
+        'Server banners leaking exact software distributions',
+        'Misconfigured standard headers enabling cross-site scripting (XSS)'
+      ],
+      commandExample: 'wappalyzer https://target.com --json'
+    },
+    { 
+      title: 'WHOIS', 
+      desc: 'Domain registration and ownership records.', 
+      icon: FileText,
+      howItWorks: 'Issues structured requests to top-level registry databases to retrieve precise registration details, administrator contacts, domain status flags, and authoritative Name Server records.',
+      vulnsFound: [
+        'Vulnerability to domain hijacking (due to near-by expiration)',
+        'Personally identifiable information leak (PII) enabling targeted spear-phishing',
+        'Name Server vulnerabilities or unauthorized external modifications',
+        'Lack of domain transfer protection locking'
+      ],
+      commandExample: 'whois target.com'
+    },
+    { 
+      title: 'DNS Analysis', 
+      desc: 'Comprehensive DNS record verification.', 
+      icon: Zap,
+      howItWorks: 'Queries global nameservers for SPF, DKIM, DMARC, MX, and TXT records, ensuring the structural validity of name mapping and mail transfer parameters.',
+      vulnsFound: [
+        'Domain-level mail spoofing and phishing risks from weak SPF/DMARC',
+        'Dangling zones or wildcard DNS vulnerable to takeover',
+        'Unauthorized zone transfers revealing comprehensive internal assets list',
+        'Lack of DNSSEC authentication, exposing visitors to cache poisoning'
+      ],
+      commandExample: 'dig target.com ANY +noall +answer'
+    },
+    { 
+      title: 'SSL/TLS', 
+      desc: 'Certificate health and cipher suite audit.', 
+      icon: Lock,
+      howItWorks: 'Initiates multiple custom SSL/TLS trial handshakes to inventory supported protocol versions, certificate expiration times, cryptographic signature strengths, and matching cipher lists.',
+      vulnsFound: [
+        'Usage of obsolete, insecure security protocols (SSLv3, TLS 1.0, TLS 1.1)',
+        'Vulnerability to historic attacks (BEAST, POODLE, ROBOT, Logjam)',
+        'Weak, outdated, or export-grade cipher suites in active rotation',
+        'Expired, self-signed, invalid, or untrusted certificate chains'
+      ],
+      commandExample: 'testssl.sh --severity HIGH target.com'
+    },
+    { 
+      title: 'Gemini AI', 
+      desc: 'Intelligent findings analysis and reporting.', 
+      icon: Cpu,
+      howItWorks: 'Ingests multidimensional raw reports, logs, and findings. Generates clean semantic analyses, scores vulnerability severity, deduces compound exploit risks, and translates raw terminal dumps into clear, code-level remediation steps.',
+      vulnsFound: [
+        'Complex compound vulnerabilities (multiple minor issues forming high-risk paths)',
+        'Logical gaps or custom code flaws missed by signature-based tools',
+        'Context-specific vulnerability exploitability verification',
+        'Prioritization problems by identifying critical business-impact exposure'
+      ],
+      commandExample: 'gemini-cli analyze --report full_recon_logs.json'
+    },
+  ];
+
   return (
     <div className="pt-24 pb-20 px-6 max-w-7xl mx-auto overflow-hidden">
       <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
@@ -212,34 +321,121 @@ const LandingPage = ({ onStart }: { onStart: () => void }) => {
       <section className="mt-20 py-20 border-t border-white/5">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Enterprise Grade Tools</h2>
-          <p className="text-vuln-muted">Integrated with the world's most trusted security analysis tools.</p>
+          <p className="text-vuln-muted">Integrated with the world's most trusted security analysis tools. Click any card to explore how it detects flaws.</p>
         </div>
         <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[
-            { title: 'Nmap', desc: 'Industry standard port scanning & service discovery.', icon: Terminal },
-            { title: 'SQLMap', desc: 'Automatic SQL injection and database takeover tool.', icon: ShieldAlert },
-            { title: 'Subfinder', desc: 'Passive subdomain discovery tool.', icon: Search },
-            { title: 'Wappalyzer', desc: 'Technology stack and CMS profiling.', icon: GlobeIcon },
-            { title: 'WHOIS', desc: 'Domain registration and ownership records.', icon: FileText },
-            { title: 'DNS Analysis', desc: 'Comprehensive DNS record verification.', icon: Zap },
-            { title: 'SSL/TLS', desc: 'Certificate health and cipher suite audit.', icon: Lock },
-            { title: 'Gemini AI', desc: 'Intelligent findings analysis and reporting.', icon: Cpu },
-          ].map((tool, i) => (
+          {toolsData.map((tool, i) => (
             <motion.div
               key={tool.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 glass rounded-2xl hover:border-vuln-accent/30 transition-all cursor-default"
+              onClick={() => setSelectedTool(tool)}
+              className="p-6 glass rounded-2xl border border-white/5 hover:border-vuln-accent/40 bg-white/[0.01] hover:bg-white/[0.03] hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between min-h-[180px]"
             >
-              <tool.icon className="text-vuln-accent mb-4" size={24} />
-              <h3 className="text-xl font-bold mb-2">{tool.title}</h3>
-              <p className="text-vuln-muted text-sm">{tool.desc}</p>
+              <div>
+                <tool.icon className="text-vuln-accent mb-4 group-hover:scale-110 transition-transform duration-300" size={24} />
+                <h3 className="text-xl font-bold mb-2 group-hover:text-vuln-accent transition-colors">{tool.title}</h3>
+                <p className="text-vuln-muted text-sm">{tool.desc}</p>
+              </div>
+              <div className="mt-4 pt-2 flex items-center gap-1.5 text-xs text-vuln-accent font-mono opacity-60 group-hover:opacity-100 transition-opacity">
+                <span>How config audits work</span>
+                <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
+
+      {/* Modal with Details of the Tool */}
+      <AnimatePresence>
+        {selectedTool && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedTool(null)}
+              className="absolute inset-0 bg-slate-950/85 backdrop-blur-md"
+            />
+            
+            {/* Modal Box */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: 20 }}
+              className="relative w-full max-w-2xl bg-slate-900 border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto z-10"
+            >
+              {/* Top Close Button */}
+              <button
+                onClick={() => setSelectedTool(null)}
+                className="absolute top-5 right-5 p-2 text-zinc-400 hover:text-white rounded-full bg-slate-800/50 hover:bg-slate-800 transition-all cursor-pointer"
+                title="Close"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-vuln-accent/10 border border-vuln-accent/20 rounded-2xl">
+                  <selectedTool.icon className="text-vuln-accent" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white font-mono tracking-tight">{selectedTool.title}</h3>
+                  <p className="text-xs text-vuln-accent font-mono tracking-wider uppercase">Active Diagnostic Tool</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono mb-2">Scope of Auditing</h4>
+                  <p className="text-sm text-slate-300 leading-relaxed">{selectedTool.desc}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono mb-2">Detection Methodology</h4>
+                  <p className="text-sm text-slate-300 leading-relaxed bg-slate-950/50 p-4 border border-white/5 rounded-xl text-justify border-l-2 border-l-vuln-accent">
+                    {selectedTool.howItWorks}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono mb-2.5">Key Vulnerabilities Targeted</h4>
+                  <div className="grid sm:grid-cols-2 gap-2 text-xs">
+                    {selectedTool.vulnsFound.map((vuln: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2 text-slate-300 bg-slate-800/10 p-2 rounded-lg border border-white/5">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-vuln-accent mt-1.5 shrink-0" />
+                        <span>{vuln}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono mb-2 flex items-center gap-1.5">
+                    <Terminal size={12} className="text-vuln-accent" />
+                    Terminal Command Signature (Simulation)
+                  </h4>
+                  <div className="font-mono text-xs bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-emerald-400/95 overflow-x-auto flex justify-between items-center group">
+                    <span>$ {selectedTool.commandExample}</span>
+                    <span className="text-[9px] text-zinc-500 group-hover:text-zinc-400 transition-colors pointer-events-none uppercase font-sans tracking-wide">Command signature</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/5 flex justify-end">
+                <button
+                  onClick={() => setSelectedTool(null)}
+                  className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-mono text-xs font-bold rounded-xl transition-all cursor-pointer"
+                >
+                  DISMISS INFO
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -30,9 +30,11 @@ interface ChapterContent {
 }
 
 export default function AcademicReportPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     studentName: 'VISHWAS THUMMAR',
-    rollNumber: '21BCE0456',
+    studentName2: 'PARTH PATEL',
+    studentName3: 'HARSH SHAH',
+    studentName4: 'SMIT MEHTA',
     guideName: 'PROF. SANJAY SHARMA',
     institution: 'SWARRNIM STARTUP & INNOVATION UNIVERSITY',
     academicYear: '2025-2026'
@@ -48,15 +50,26 @@ export default function AcademicReportPage() {
   const [showWatermark, setShowWatermark] = useState<boolean>(true);
   const [lineSpacing, setLineSpacing] = useState<string>('1.5');
 
+  // Helper to get joined student names for preview
+  const studentsList = [
+    formData.studentName,
+    formData.studentName2,
+    formData.studentName3,
+    formData.studentName4,
+  ].filter(name => typeof name === 'string' && name.trim() !== "");
+  const studentsJoined = studentsList.length > 0 ? studentsList.join(", ") : "VISHWAS THUMMAR";
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
   const handleResetForm = () => {
     setFormData({
       studentName: 'VISHWAS THUMMAR',
-      rollNumber: '21BCE0456',
+      studentName2: 'PARTH PATEL',
+      studentName3: 'HARSH SHAH',
+      studentName4: 'SMIT MEHTA',
       guideName: 'PROF. SANJAY SHARMA',
       institution: 'SWARRNIM STARTUP & INNOVATION UNIVERSITY',
       academicYear: '2025-2026'
@@ -271,7 +284,7 @@ export default function AcademicReportPage() {
             identifying severe coding oversights, and translating machine-readable logs into clear structural recommendations.
           </p>
           <p className="indent-8 font-serif text-slate-600">
-            [Student Signature Verified: {formData.studentName} | Roll Number: {formData.rollNumber}]
+            [Student Signatures Verified: {studentsJoined}]
           </p>
         </div>
       )
@@ -954,7 +967,7 @@ export default function AcademicReportPage() {
 
               <form onSubmit={triggerDownload} className="space-y-4">
                 
-                <div>
+                 <div>
                   <div className="flex justify-between items-center mb-1.5">
                     <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
                       Student Full Name
@@ -978,23 +991,64 @@ export default function AcademicReportPage() {
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
                     <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
-                      Enrollment / Roll Number
+                      Student 2 Full Name
                     </label>
-                    <span className="text-[10px] font-mono text-zinc-500">Academic ID</span>
+                    <span className="text-[10px] font-mono text-zinc-500">Optional</span>
                   </div>
                   <div className="relative">
-                    <Award className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
+                    <User className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
                     <input
-                      required
                       type="text"
-                      name="rollNumber"
-                      value={formData.rollNumber}
+                      name="studentName2"
+                      value={formData.studentName2 || ''}
                       onChange={handleInputChange}
-                      placeholder="e.g. 21BCE0456"
+                      placeholder="e.g. PARTH PATEL"
                       className="w-full bg-slate-950 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition-all text-white placeholder-slate-600 font-mono"
                     />
                   </div>
                 </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
+                      Student 3 Full Name
+                    </label>
+                    <span className="text-[10px] font-mono text-zinc-500">Optional</span>
+                  </div>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
+                    <input
+                      type="text"
+                      name="studentName3"
+                      value={formData.studentName3 || ''}
+                      onChange={handleInputChange}
+                      placeholder="e.g. HARSH SHAH"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition-all text-white placeholder-slate-600 font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
+                      Student 4 Full Name
+                    </label>
+                    <span className="text-[10px] font-mono text-zinc-500">Optional</span>
+                  </div>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
+                    <input
+                      type="text"
+                      name="studentName4"
+                      value={formData.studentName4 || ''}
+                      onChange={handleInputChange}
+                      placeholder="e.g. SMIT MEHTA"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition-all text-white placeholder-slate-600 font-mono"
+                    />
+                  </div>
+                </div>
+
+
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
@@ -1112,27 +1166,31 @@ export default function AcademicReportPage() {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={isGenerating}
-                  className={`w-full py-4 px-6 rounded-2xl text-[13px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2.5 border shrink-0 ${
-                    isGenerating 
-                      ? 'bg-slate-900 border-white/10 cursor-not-allowed text-zinc-500' 
-                      : 'bg-emerald-500 hover:bg-emerald-400 border-emerald-600/20 text-slate-950 shadow-neon-emerald hover:scale-[1.01] active:scale-[0.99]'
-                  }`}
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-slate-950 border-r-transparent rounded-full animate-spin" />
-                      <span>Generating academic Word document...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-4.5 h-4.5" />
-                      <span>Generate Professional DOCX</span>
-                    </>
-                  )}
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="submit"
+                    disabled={isGenerating}
+                    className={`w-full py-3.5 px-6 rounded-2xl text-[12px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2.5 border shrink-0 cursor-pointer ${
+                      isGenerating 
+                        ? 'bg-slate-900 border-white/10 cursor-not-allowed text-zinc-500' 
+                        : 'bg-emerald-500 hover:bg-emerald-400 border-emerald-600/20 text-slate-950 shadow-neon-emerald hover:scale-[1.01] active:scale-[0.99]'
+                    }`}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-slate-950 border-r-transparent rounded-full animate-spin" />
+                        <span>Generating academic Word document...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4.5 h-4.5" />
+                        <span>Generate Professional DOCX</span>
+                      </>
+                    )}
+                  </button>
+
+
+                </div>
               </form>
             </div>
 
@@ -1294,7 +1352,7 @@ export default function AcademicReportPage() {
 
                     {/* Document footer running line with current student model attributes */}
                     <div className="mt-10 pt-4 border-t border-slate-200 flex justify-between items-center text-[10px] font-serif text-slate-400">
-                      <span>Submitted by: {formData.studentName} ({formData.rollNumber})</span>
+                      <span>Submitted by: {studentsJoined}</span>
                       <span>Guide: {formData.guideName}</span>
                     </div>
 

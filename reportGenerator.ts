@@ -18,7 +18,9 @@ import {
 
 export interface ReportMetadata {
   studentName: string;
-  rollNumber: string;
+  studentName2?: string;
+  studentName3?: string;
+  studentName4?: string;
   guideName: string;
   institution: string;
   academicYear: string;
@@ -187,8 +189,15 @@ const globalCreateBulletPoint = createBulletPoint;
 // Function to generate the complete document structure
 export async function generateReportDocx(meta: ReportMetadata): Promise<Buffer> {
   // Read and fallback values
-  const student = meta.studentName || "VISHWAS THUMMAR";
-  const roll = meta.rollNumber || "21BCE0456";
+  const students = [
+    meta.studentName,
+    meta.studentName2,
+    meta.studentName3,
+    meta.studentName4
+  ].filter(name => typeof name === 'string' && name.trim() !== "");
+  if (students.length === 0) {
+    students.push("VISHWAS THUMMAR");
+  }
   const guide = meta.guideName || "PROF. SANJAY SHARMA";
   const inst = meta.institution || "SWARRNIM STARTUP & INNOVATION UNIVERSITY";
   const year = meta.academicYear || "2025-2026";
@@ -292,20 +301,14 @@ export async function generateReportDocx(meta: ReportMetadata): Promise<Buffer> 
               insideHorizontal: { style: BorderStyle.NONE },
               insideVertical: { style: BorderStyle.NONE },
             },
-            rows: [
-              new TableRow({
+            rows: students.map((stdName, idx) => {
+              return new TableRow({
                 children: [
-                  createBodyCell("NAME OF STUDENT:", 50, { alignment: AlignmentType.RIGHT, bold: true }),
-                  createBodyCell(student.toUpperCase(), 50, { alignment: AlignmentType.LEFT })
+                  createBodyCell(idx === 0 ? (students.length > 1 ? "NAMES OF STUDENTS:" : "NAME OF STUDENT:") : "", 50, { alignment: AlignmentType.RIGHT, bold: true }),
+                  createBodyCell(stdName.toUpperCase(), 50, { alignment: AlignmentType.LEFT })
                 ]
-              }),
-              new TableRow({
-                children: [
-                  createBodyCell("ENROLLMENT NO:", 50, { alignment: AlignmentType.RIGHT, bold: true }),
-                  createBodyCell(roll, 50, { alignment: AlignmentType.LEFT })
-                ]
-              })
-            ]
+              });
+            })
           }),
 
           new Paragraph({
@@ -426,7 +429,7 @@ export async function generateReportDocx(meta: ReportMetadata): Promise<Buffer> 
                 spacing: { before: 120 },
                 children: [
                   new TextRun({
-                    text: `Submitted by: ${student.toUpperCase()} (${roll})   |   Guide: ${guide.toUpperCase()}   |   Page `,
+                    text: `Submitted by: ${students.join(", ").toUpperCase()}   |   Guide: ${guide.toUpperCase()}   |   Page `,
                     font: "Times New Roman",
                     size: 16, // 8pt
                     color: "555555"
@@ -839,10 +842,8 @@ export async function generateReportDocx(meta: ReportMetadata): Promise<Buffer> 
             "identifying severe coding oversights, and translating machine-readable logs into clear structural recommendations."
           ),
           createMixedParagraph([
-            { text: "[Student Signature Verified: ", italics: true },
-            { text: student.toUpperCase(), bold: true, italics: true },
-            { text: " | Roll Number: ", italics: true },
-            { text: roll, bold: true, italics: true },
+            { text: "[Student Signatures Verified: ", italics: true },
+            { text: students.join(", ").toUpperCase(), bold: true, italics: true },
             { text: "]", italics: true }
           ]),
 

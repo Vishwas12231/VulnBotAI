@@ -937,10 +937,12 @@ app.get("/api/scans", async (req, res) => {
 
 app.post("/api/report/generate", async (req, res) => {
   try {
-    const { studentName, rollNumber, guideName, institution, academicYear, showWatermark, lineSpacing } = req.body;
+    const { studentName, studentName2, studentName3, studentName4, guideName, institution, academicYear, showWatermark, lineSpacing } = req.body;
     const docBuffer = await generateReportDocx({
       studentName,
-      rollNumber,
+      studentName2,
+      studentName3,
+      studentName4,
       guideName,
       institution,
       academicYear,

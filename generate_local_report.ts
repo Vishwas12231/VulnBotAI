@@ -6,7 +6,9 @@ async function main() {
   console.log("Generating local formal academic project report...");
   const meta = {
     studentName: "VISHWAS THUMMAR",
-    rollNumber: "21BCE0456",
+    studentName2: "PARTH PATEL",
+    studentName3: "HARSH SHAH",
+    studentName4: "SMIT MEHTA",
     guideName: "PROF. SANJAY SHARMA",
     institution: "SWARRNIM STARTUP & INNOVATION UNIVERSITY",
     academicYear: "2025-2026"
