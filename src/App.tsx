@@ -827,10 +827,10 @@ const ResultsPage = ({ results }: { results: any }) => {
       for (let i = 0; i < pages.length; i++) {
         const pageEl = pages[i] as HTMLElement;
 
-        // Render each page individually with high scaling factor of 3 to make text crystal clear
+        // Render each page individually with safe scaling to prevent "Invalid string length" errors during PDF generation
         const canvas = await html2canvas(pageEl, {
           backgroundColor: '#020617',
-          scale: 3, // High DPI scaling for vector crispness
+          scale: 1.5, // Standard DPI scaling for reliable memory allocation on multi-page reports
           logging: false,
           useCORS: true,
           allowTaint: true,
@@ -1844,7 +1844,7 @@ export default function App() {
           } catch (e) {
             console.warn("Storage write failed", e);
           }
-          setCurrentPage('landing');
+          setCurrentPage('dashboard');
         }} 
       />
     );

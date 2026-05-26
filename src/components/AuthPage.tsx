@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShieldAlert, Mail, Lock, Key, CheckCircle2, AlertTriangle, Loader2, ArrowRight } from 'lucide-react';
+import { ShieldAlert, Mail, Lock, Key, CheckCircle2, AlertTriangle, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 interface AuthPageProps {
   onSuccess: (email: string) => void;
@@ -13,6 +13,7 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -216,13 +217,21 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
                   <Lock size={15} />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   disabled={loading}
-                  className="w-full bg-slate-950/60 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-vuln-accent transition-colors font-sans"
+                  className="w-full bg-slate-950/60 border border-white/10 rounded-xl py-3 pl-11 pr-11 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-vuln-accent transition-colors font-sans"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-vuln-muted hover:text-white transition-colors cursor-pointer"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
               </div>
             </div>
 
@@ -244,13 +253,21 @@ export default function AuthPage({ onSuccess }: AuthPageProps) {
                       <Key size={15} />
                     </div>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
                       disabled={loading}
-                      className="w-full bg-slate-950/60 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-vuln-accent transition-colors font-sans"
+                      className="w-full bg-slate-950/60 border border-white/10 rounded-xl py-3 pl-11 pr-11 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-vuln-accent transition-colors font-sans"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-vuln-muted hover:text-white transition-colors cursor-pointer"
+                      title={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
                   </div>
                 </motion.div>
               )}
